@@ -1,8 +1,11 @@
 #pragma once
 
-enum class GameState
+namespace Squareball
 {
-    Placeholder
-};
+    enum class GameState
+    {
+        Placeholder
+    };
 
-GameState RunState(GameState state);
+    GameState RunState(GameState state);
+}

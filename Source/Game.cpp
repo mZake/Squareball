@@ -2,21 +2,24 @@
 
 #include "State.h"
 
-void GameMain()
+namespace Squareball
 {
-    InitWindow(1152, 648, "Squareball");
-
-    GameState state = GameState::Placeholder;
-
-    while (!WindowShouldClose())
+    void GameMain()
     {
-        state = RunState(state);
+        InitWindow(1152, 648, "Squareball");
 
-        // TODO: Remove this
-        BeginDrawing();
-        ClearBackground(RED);
-        EndDrawing();
+        GameState state = GameState::Placeholder;
+
+        while (!WindowShouldClose())
+        {
+            state = RunState(state);
+
+            // TODO: Remove this
+            BeginDrawing();
+            ClearBackground(RED);
+            EndDrawing();
+        }
+
+        CloseWindow();
     }
-
-    CloseWindow();
 }

@@ -1,3 +1,6 @@
 #pragma once
 
-void GameMain();
+namespace Squareball
+{
+    void GameMain();
+}

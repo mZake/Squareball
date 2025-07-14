@@ -2,5 +2,5 @@
 
 int main()
 {
-    GameMain();
+    Squareball::GameMain();
 }

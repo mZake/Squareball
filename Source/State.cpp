@@ -1,6 +1,9 @@
 #include "State.h"
 
-GameState RunState(GameState state)
+namespace Squareball
 {
-    return GameState::Placeholder;
+    GameState RunState(GameState state)
+    {
+        return GameState::Placeholder;
+    }
 }
