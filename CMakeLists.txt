@@ -7,7 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(External/raylib)
 add_subdirectory(External/raygui)
 
-file(GLOB_RECURSE SOURCES Source/*.cpp Source/*.h)
+set(SOURCES
+    Source/Game.cpp
+    Source/Game.h
+    Source/Main.cpp
+    Source/State.cpp
+    Source/State.h
+)
+
 add_executable(Game ${SOURCES})
 
 target_include_directories(Game PRIVATE Source)
