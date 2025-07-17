@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(External/raylib)
 add_subdirectory(External/raygui)
 
-set(SOURCES
+set(GAME_SOURCES
+    Source/States/Match.cpp
+    Source/States/Match.h
+    Source/Entity.cpp
+    Source/Entity.h
     Source/Game.cpp
     Source/Game.h
     Source/Main.cpp
@@ -15,7 +19,7 @@ set(SOURCES
     Source/State.h
 )
 
-add_executable(Game ${SOURCES})
+add_executable(Game ${GAME_SOURCES})
 
 target_include_directories(Game PRIVATE Source)
 target_link_libraries(Game PRIVATE raylib raygui)

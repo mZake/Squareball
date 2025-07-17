@@ -8,16 +8,11 @@ namespace Squareball
     {
         InitWindow(1152, 648, "Squareball");
 
-        GameState state = GameState::Placeholder;
+        GameState state = GameState::Match;
 
         while (!WindowShouldClose())
         {
             state = RunState(state);
-
-            // TODO: Remove this
-            BeginDrawing();
-            ClearBackground(RED);
-            EndDrawing();
         }
 
         CloseWindow();
