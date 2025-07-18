@@ -1,31 +1,53 @@
 #include "Match.h"
 
+#include <string>
+
 #include <raylib.h>
 #include <raymath.h>
 
-constexpr int       WindowWidth = 1152;
-constexpr int       WindowHeight = 648;
-constexpr float     MoveSpeed = 400.0f;
-constexpr float     BallFriction = 0.3f;
+#include "Collision.h"
+#include "State.h"
+
+constexpr int WindowWidth = 1152;
+constexpr int WindowHeight = 648;
 
 namespace Squareball
 {
-    static void UpdatePlayer(Entity& player, float delta);
-    static void UpdateBall(Entity& ball, float delta);
-    static void IntersectPlayerBall(Entity& player, Entity& ball, float delta);
+    static void UpdatePlayer(PlayerEntity& player, float delta);
+    static void UpdateBall(BallEntity& ball, float delta);
+
+    static void DrawPlayer(const PlayerEntity& player);
+    static void DrawBall(const BallEntity& ball);
+    static void CustomDrawFPS();
 
     GameState RunMatch()
     {
-        Entity player = {
-            .position = { 0.0f, 0.0f },
-            .velocity = { 0.0f, 0.0f },
-            .color = RED,
+        PlayerEntity player = {
+            .Type       = PlayerType::Local1,
+            .Position   = { 0.0f, 0.0f },
+            .Color      = RED,
+            .Width      = 64,
+            .Height     = 64,
+            .Speed      = 300.0f,
         };
 
-        Entity ball = {
-            .position = { 100.0f, 100.0f },
-            .velocity = { 0.0f, 0.0f },
-            .color = WHITE,
+        PlayerEntity bot = {
+            .Type       = PlayerType::Bot,
+            .Position   = { 300.0f, 300.0f },
+            .Color      = BLUE,
+            .Width      = 64,
+            .Height     = 64,
+            .Speed      = 300.0f,
+        };
+
+        BallEntity ball = {
+            .Position       = { 100.0f, 100.0f },
+            .Velocity       = { 0.0f, 0.0f },
+            .Color          = WHITE,
+            .Width          = 48,
+            .Height         = 48,
+            .Friction       = 0.2f,
+            .ImpulseForce   = 500.0f,
         };
 
         while (!WindowShouldClose())
@@ -34,13 +56,19 @@ namespace Squareball
 
             UpdatePlayer(player, delta);
             UpdateBall(ball, delta);
-            IntersectPlayerBall(player, ball, delta);
+
+            HandleCollisionPlayers(player, bot);
+            HandleCollisionPlayerBall(player, ball);
+            HandleCollisionPlayerBall(bot, ball);
             
             BeginDrawing();
 
             ClearBackground(GREEN);
-            DrawEntity(player);
-            DrawEntity(ball);
+
+            DrawPlayer(player);
+            DrawPlayer(bot);
+            DrawBall(ball);
+            CustomDrawFPS();
 
             EndDrawing();
         }
@@ -48,7 +76,7 @@ namespace Squareball
         return GameState::None;
     }
 
-    static void UpdatePlayer(Entity& player, float delta)
+    static void UpdatePlayer(PlayerEntity& player, float delta)
     {
         Vector2 direction = {
             .x = (float)((int)IsKeyDown(KEY_D) - (int)IsKeyDown(KEY_A)),
@@ -56,39 +84,48 @@ namespace Squareball
         };
 
         direction = Vector2Normalize(direction);
-        player.velocity = direction * MoveSpeed * delta;
-        player.position += player.velocity;
+        player.Position += direction * player.Speed * delta;
 
-        player.position.x = Clamp(player.position.x, 0, WindowWidth - EntityWidth);
-        player.position.y = Clamp(player.position.y, 0, WindowHeight - EntityHeight);
+        player.Position.x = Clamp(player.Position.x, 0, WindowWidth - player.Width);
+        player.Position.y = Clamp(player.Position.y, 0, WindowHeight - player.Height);
     }
 
-    static void UpdateBall(Entity& ball, float delta)
+    static void UpdateBall(BallEntity& ball, float delta)
     {
-        if (ball.velocity != Vector2Zero())
+        if (ball.Velocity != Vector2Zero())
         {
-            ball.velocity -= ball.velocity * BallFriction * delta;
-            ball.position += ball.velocity;
-            if (ball.position.x < 0 || ball.position.x > WindowWidth - EntityWidth)
+            ball.Velocity -= ball.Velocity * ball.Friction * delta;
+            ball.Position += ball.Velocity;
+
+            if (ball.Position.x < 0 || ball.Position.x > WindowWidth - ball.Width)
             {
-                ball.position.x = Clamp(ball.position.x, 0, WindowWidth - EntityWidth);
-                ball.velocity.x *= -1;
+                ball.Position.x = Clamp(ball.Position.x, 0, WindowWidth - ball.Width);
+                ball.Velocity.x *= -1;
             }
-            if (ball.position.y < 0 || ball.position.y > WindowHeight - EntityHeight)
+            if (ball.Position.y < 0 || ball.Position.y > WindowHeight - ball.Height)
             {
-                ball.position.y = Clamp(ball.position.y, 0, WindowHeight - EntityHeight);
-                ball.velocity.y *= -1;
+                ball.Position.y = Clamp(ball.Position.y, 0, WindowHeight - ball.Height);
+                ball.Velocity.y *= -1;
             }
         }
     }
 
-    static void IntersectPlayerBall(Entity& player, Entity& ball, float delta)
+    static void DrawPlayer(const PlayerEntity& player)
     {
-        Intersection result = IntersectEntities(player, ball);
-        if (result.overlapping)
-        {
-            player.position -= result.normal * result.depth;
-            ball.velocity += result.normal * 500.0f * delta;
-        }
+        Rectangle rect = { player.Position.x, player.Position.y, (float)player.Width, (float)player.Height };
+        DrawRectangleRec(rect, player.Color);
+    }
+
+    static void DrawBall(const BallEntity& ball)
+    {
+        Rectangle rect = { ball.Position.x, ball.Position.y, (float)ball.Width, (float)ball.Height };
+        DrawRectangleRec(rect, ball.Color);
+    }
+
+    static void CustomDrawFPS()
+    {
+        int fps = GetFPS();
+        const char* text = TextFormat("FPS: %d", fps);
+        DrawText(text, 10, 10, 30, BLACK);
     }
 }

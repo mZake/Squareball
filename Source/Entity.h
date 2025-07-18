@@ -4,23 +4,32 @@
 
 namespace Squareball
 {
-    struct Intersection
+    enum class PlayerType
     {
-        Vector2     normal;
-        float       depth;
-        bool        overlapping;
+        None = 0,
+        Local1,
+        Local2,
+        Bot,
     };
 
-    struct Entity
+    struct PlayerEntity
     {
-        Vector2     position;
-        Vector2     velocity;
-        Color       color;
+        PlayerType  Type;
+        Vector2     Position;
+        Color       Color;
+        int         Width;
+        int         Height;
+        float       Speed;
     };
 
-    constexpr int EntityWidth = 64;
-    constexpr int EntityHeight = 64;
-    
-    Intersection    IntersectEntities(const Entity& e1, const Entity& e2);
-    void            DrawEntity(const Entity& e);
+    struct BallEntity
+    {
+        Vector2     Position;
+        Vector2     Velocity;
+        Color       Color;
+        int         Width;
+        int         Height;
+        float       Friction;
+        float       ImpulseForce;
+    };
 }

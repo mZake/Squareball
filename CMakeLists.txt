@@ -10,7 +10,8 @@ add_subdirectory(External/raygui)
 set(GAME_SOURCES
     Source/States/Match.cpp
     Source/States/Match.h
-    Source/Entity.cpp
+    Source/Collision.cpp
+    Source/Collision.h
     Source/Entity.h
     Source/Game.cpp
     Source/Game.h
