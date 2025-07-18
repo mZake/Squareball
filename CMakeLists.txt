@@ -16,6 +16,8 @@ set(GAME_SOURCES
     Source/Game.cpp
     Source/Game.h
     Source/Main.cpp
+    Source/Render.cpp
+    Source/Render.h
     Source/State.cpp
     Source/State.h
 )

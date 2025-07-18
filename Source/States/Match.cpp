@@ -1,12 +1,11 @@
 #include "Match.h"
 
-#include <string>
-
 #include <raylib.h>
 #include <raymath.h>
 
 #include "Collision.h"
 #include "State.h"
+#include "Render.h"
 
 constexpr int WindowWidth = 1152;
 constexpr int WindowHeight = 648;
@@ -15,11 +14,7 @@ namespace Squareball
 {
     static void UpdatePlayer(PlayerEntity& player, float delta);
     static void UpdateBall(BallEntity& ball, float delta);
-
-    static void DrawPlayer(const PlayerEntity& player);
-    static void DrawBall(const BallEntity& ball);
-    static void CustomDrawFPS();
-
+    
     GameState RunMatch()
     {
         PlayerEntity player = {
@@ -108,24 +103,5 @@ namespace Squareball
                 ball.Velocity.y *= -1;
             }
         }
-    }
-
-    static void DrawPlayer(const PlayerEntity& player)
-    {
-        Rectangle rect = { player.Position.x, player.Position.y, (float)player.Width, (float)player.Height };
-        DrawRectangleRec(rect, player.Color);
-    }
-
-    static void DrawBall(const BallEntity& ball)
-    {
-        Rectangle rect = { ball.Position.x, ball.Position.y, (float)ball.Width, (float)ball.Height };
-        DrawRectangleRec(rect, ball.Color);
-    }
-
-    static void CustomDrawFPS()
-    {
-        int fps = GetFPS();
-        const char* text = TextFormat("FPS: %d", fps);
-        DrawText(text, 10, 10, 30, BLACK);
     }
 }
