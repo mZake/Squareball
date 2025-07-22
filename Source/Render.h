@@ -6,7 +6,6 @@
 
 namespace Squareball
 {
-    void DrawPlayer(const PlayerEntity& player);
-    void DrawBall(const BallEntity& ball);
+    void DrawEntity(const GameEntity& entity);
     void CustomDrawFPS();
 }

@@ -12,23 +12,23 @@ namespace Squareball
         Bot,
     };
 
-    struct PlayerEntity
-    {
-        PlayerType  Type;
-        Vector2     Position;
-        Color       Color;
-        int         Width;
-        int         Height;
-        float       Speed;
-    };
-
-    struct BallEntity
+    struct GameEntity
     {
         Vector2     Position;
         Vector2     Velocity;
         Color       Color;
         int         Width;
         int         Height;
+    };
+
+    struct PlayerEntity : public GameEntity
+    {
+        PlayerType  Type;
+        float       Speed;
+    };
+
+    struct BallEntity : public GameEntity
+    {
         float       Friction;
         float       ImpulseForce;
     };

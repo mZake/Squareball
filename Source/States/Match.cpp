@@ -17,33 +17,28 @@ namespace Squareball
     
     GameState RunMatch()
     {
-        PlayerEntity player = {
-            .Type       = PlayerType::Local1,
-            .Position   = { 0.0f, 0.0f },
-            .Color      = RED,
-            .Width      = 64,
-            .Height     = 64,
-            .Speed      = 300.0f,
-        };
+        PlayerEntity player = {};
+        player.Color = RED;
+        player.Width = 64;
+        player.Height = 64;
+        player.Type = PlayerType::Local1;
+        player.Speed = 300.0f;
 
-        PlayerEntity bot = {
-            .Type       = PlayerType::Bot,
-            .Position   = { 300.0f, 300.0f },
-            .Color      = BLUE,
-            .Width      = 64,
-            .Height     = 64,
-            .Speed      = 300.0f,
-        };
+        PlayerEntity bot = {};
+        bot.Position = { 300.0f, 300.0f };
+        bot.Color = BLUE;
+        bot.Width = 64;
+        bot.Height = 64;
+        bot.Type = PlayerType::Bot;
+        bot.Speed = 300.0f;
 
-        BallEntity ball = {
-            .Position       = { 100.0f, 100.0f },
-            .Velocity       = { 0.0f, 0.0f },
-            .Color          = WHITE,
-            .Width          = 48,
-            .Height         = 48,
-            .Friction       = 0.2f,
-            .ImpulseForce   = 500.0f,
-        };
+        BallEntity ball = {};
+        ball.Position = { 100.0f, 100.0f };
+        ball.Color = WHITE;
+        ball.Width = 48;
+        ball.Height = 48;
+        ball.Friction = 0.2f;
+        ball.ImpulseForce = 500.0f;
 
         while (!WindowShouldClose())
         {
@@ -60,9 +55,9 @@ namespace Squareball
 
             ClearBackground(GREEN);
 
-            DrawPlayer(player);
-            DrawPlayer(bot);
-            DrawBall(ball);
+            DrawEntity(player);
+            DrawEntity(bot);
+            DrawEntity(ball);
             CustomDrawFPS();
 
             EndDrawing();

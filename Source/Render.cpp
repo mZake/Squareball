@@ -6,16 +6,10 @@
 
 namespace Squareball
 {
-    void DrawPlayer(const PlayerEntity& player)
+    void DrawEntity(const GameEntity& entity)
     {
-        Rectangle rect = { player.Position.x, player.Position.y, (float)player.Width, (float)player.Height };
-        DrawRectangleRec(rect, player.Color);
-    }
-
-    void DrawBall(const BallEntity& ball)
-    {
-        Rectangle rect = { ball.Position.x, ball.Position.y, (float)ball.Width, (float)ball.Height };
-        DrawRectangleRec(rect, ball.Color);
+        Rectangle rect = { entity.Position.x, entity.Position.y, (float)entity.Width, (float)entity.Height };
+        DrawRectangleRec(rect, entity.Color);
     }
 
     void CustomDrawFPS()
