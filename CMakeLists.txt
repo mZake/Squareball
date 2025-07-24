@@ -12,12 +12,11 @@ set(GAME_SOURCES
     Source/States/Match.h
     Source/Collision.cpp
     Source/Collision.h
+    Source/Entity.cpp
     Source/Entity.h
     Source/Game.cpp
     Source/Game.h
     Source/Main.cpp
-    Source/Render.cpp
-    Source/Render.h
     Source/State.cpp
     Source/State.h
 )

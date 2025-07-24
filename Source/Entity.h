@@ -4,15 +4,7 @@
 
 namespace Squareball
 {
-    enum class PlayerType
-    {
-        None = 0,
-        Local1,
-        Local2,
-        Bot,
-    };
-
-    struct GameEntity
+    struct Entity
     {
         Vector2     Position;
         Vector2     Velocity;
@@ -21,15 +13,30 @@ namespace Squareball
         int         Height;
     };
 
-    struct PlayerEntity : public GameEntity
+    enum class PlayerController
     {
-        PlayerType  Type;
-        float       Speed;
+        None = 0,
+        WASDKeys,
+        ArrowKeys,
     };
 
-    struct BallEntity : public GameEntity
+    struct Player : public Entity
     {
-        float       Friction;
-        float       ImpulseForce;
+        PlayerController    Controller;
+        float               Speed;
     };
+
+    struct Ball : public Entity
+    {
+        float Friction;
+        float ImpulseForce;
+    };
+
+    void MoveEntityX(Entity& entity);
+    void MoveEntityY(Entity& entity);
+
+    void UpdatePlayer(Player& player, float delta);
+    void UpdateBall(Ball& ball, float delta);
+
+    void DrawEntity(const Entity& entity);
 }

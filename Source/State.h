@@ -4,7 +4,7 @@ namespace Squareball
 {
     enum class GameState
     {
-        None,
+        None = 0,
         Match,
     };
 

@@ -14,7 +14,8 @@ namespace Squareball
     };
 
     Intersection IntersectRectangles(Rectangle rect1, Rectangle rect2);
+    Intersection IntersectEntities(const Entity& entity1, const Entity& entity2);
 
-    void HandleCollisionPlayers(PlayerEntity& player1, PlayerEntity& player2);
-    void HandleCollisionPlayerBall(PlayerEntity& player, BallEntity& ball);
+    void ProcessCollisionPlayers(Player& player1, Player& player2);
+    void ProcessCollisionPlayerBall(Player& player, Ball& ball);
 }

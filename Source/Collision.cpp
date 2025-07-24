@@ -66,12 +66,17 @@ namespace Squareball
         return result;
     }
 
-    void HandleCollisionPlayers(PlayerEntity& player1, PlayerEntity& player2)
+    Intersection IntersectEntities(const Entity& entity1, const Entity& entity2)
     {
-        Rectangle player1Rect = { player1.Position.x, player1.Position.y, (float)player1.Width, (float)player1.Height };
-        Rectangle player2Rect = { player2.Position.x, player2.Position.y, (float)player2.Width, (float)player2.Height };
+        Rectangle entity1Rect = { entity1.Position.x, entity1.Position.y, (float)entity1.Width, (float)entity1.Height };
+        Rectangle entity2Rect = { entity2.Position.x, entity2.Position.y, (float)entity2.Width, (float)entity2.Height };
 
-        Intersection intersection = IntersectRectangles(player1Rect, player2Rect);
+        return IntersectRectangles(entity1Rect, entity2Rect);
+    }
+
+    void ProcessCollisionPlayers(Player& player1, Player& player2)
+    {
+        Intersection intersection = IntersectEntities(player1, player2);
         if (intersection.Overlapping)
         {
             player1.Position -= intersection.Normal * intersection.Depth / 2;
@@ -79,18 +84,13 @@ namespace Squareball
         }
     }
 
-    void HandleCollisionPlayerBall(PlayerEntity& player, BallEntity& ball)
+    void ProcessCollisionPlayerBall(Player& player, Ball& ball)
     {
-        Rectangle playerRect = { player.Position.x, player.Position.y, (float)player.Width, (float)player.Height };
-        Rectangle ballRect = { ball.Position.x, ball.Position.y, (float)ball.Width, (float)ball.Height };
-
-        Intersection intersection = IntersectRectangles(playerRect, ballRect);
+        Intersection intersection = IntersectEntities(player, ball);
         if (intersection.Overlapping)
         {
-            float delta = GetFrameTime();
-
             player.Position -= intersection.Normal * intersection.Depth;
-            ball.Velocity += intersection.Normal * ball.ImpulseForce * delta;
+            ball.Velocity += intersection.Normal * ball.ImpulseForce;
         }
     }
 }
