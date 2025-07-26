@@ -17,8 +17,6 @@ set(GAME_SOURCES
     Source/Game.cpp
     Source/Game.h
     Source/Main.cpp
-    Source/State.cpp
-    Source/State.h
 )
 
 add_executable(Game ${GAME_SOURCES})
