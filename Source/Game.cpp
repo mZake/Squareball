@@ -1,18 +1,40 @@
-#include <raylib.h>
+#include "Game.h"
 
-#include "State.h"
+#include <raylib.h>
 
 namespace Squareball
 {
+    struct Context
+    {
+        UpdateCallback OnUpdate;
+        RenderCallback OnRender;
+    };
+
+    static Context s_Context = {};
+
+    void SetGameUpdateCallback(UpdateCallback cb)
+    {
+        s_Context.OnUpdate = cb;
+    }
+
+    void SetGameRenderCallback(RenderCallback cb)
+    {
+        s_Context.OnRender = cb;
+    }
+
     void GameMain()
     {
         InitWindow(1152, 648, "Squareball");
 
-        GameState state = GameState::Match;
-
         while (!WindowShouldClose())
         {
-            state = RunState(state);
+            float delta = GetFrameTime();
+
+            s_Context.OnUpdate(delta);
+
+            BeginDrawing();
+            s_Context.OnRender();
+            EndDrawing();
         }
 
         CloseWindow();
