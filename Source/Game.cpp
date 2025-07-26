@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include "Scenes/Match.h"
+
 namespace Squareball
 {
     struct Context
@@ -25,6 +27,8 @@ namespace Squareball
     void GameMain()
     {
         InitWindow(1152, 648, "Squareball");
+
+        InitMatchScene();
 
         while (!WindowShouldClose())
         {
