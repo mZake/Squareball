@@ -9,6 +9,8 @@
 
 namespace Squareball
 {
+    constexpr float MaxDepth = 1000000000.0f;
+
     Intersection IntersectRectangles(Rectangle rect1, Rectangle rect2)
     {
         float rect1Left    = rect1.x;
@@ -74,6 +76,57 @@ namespace Squareball
         return IntersectRectangles(entity1Rect, entity2Rect);
     }
 
+    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& map)
+    {
+        int tileWidth = map.Tileset.TileWidth;
+        int tileHeight = map.Tileset.TileHeight;
+
+        int rectLeft = rect.x;
+        int rectRight = rect.x + rect.width;
+        int rectTop = rect.y;
+        int rectBottom = rect.y + rect.height;
+
+        int leftTile = rectLeft / tileWidth;
+        int rightTile = rectRight / tileWidth;
+        int topTile = rectTop / tileHeight;
+        int bottomTile = rectBottom / tileHeight;
+
+        Intersection result = {};
+        result.Depth = MaxDepth;
+
+        for (int y = topTile; y <= bottomTile; y++)
+        {
+            for (int x = leftTile; x <= rightTile; x++)
+            {
+                int tileIndex = map.Tiles[x + y * map.Width];
+                Tile tile = map.Tileset.Tiles[tileIndex];
+                if (tile.Flags & TileFlags_Wall)
+                {
+                    Rectangle tileRect = { (float)x * tileWidth, (float)y * tileHeight, (float)tileWidth, (float)tileHeight };
+
+                    Intersection intersection = IntersectRectangles(rect, tileRect);
+                    if (intersection.Depth > 0.0f && intersection.Depth < result.Depth)
+                    {
+                        result.Normal = intersection.Normal;
+                        result.Depth = intersection.Depth;
+                    }
+                }
+            }
+        }
+
+        if (result.Depth < MaxDepth)
+            result.Overlapping = true;
+        
+        return result;
+    }
+
+    Intersection IntersectEntityTilemap(const Entity& entity, const Tilemap& map)
+    {
+        Rectangle entityRect = { entity.Position.x, entity.Position.y, (float)entity.Width, (float)entity.Height };
+
+        return IntersectRectangleTilemap(entityRect, map);
+    }
+
     void ProcessCollisionPlayers(Player& player1, Player& player2)
     {
         Intersection intersection = IntersectEntities(player1, player2);
@@ -91,6 +144,27 @@ namespace Squareball
         {
             player.Position -= intersection.Normal * intersection.Depth;
             ball.Velocity += intersection.Normal * ball.ImpulseForce;
+        }
+    }
+
+    void ProcessCollisionPlayerTilemap(Player& player, const Tilemap& map)
+    {
+        Intersection intersection = IntersectEntityTilemap(player, map);
+        if (intersection.Overlapping)
+            player.Position -= intersection.Normal * intersection.Depth;
+    }
+
+    void ProcessCollisionBallTilemap(Ball& ball, const Tilemap& map)
+    {
+        Intersection intersection = IntersectEntityTilemap(ball, map);
+        if (intersection.Overlapping)
+        {
+            ball.Position -= intersection.Normal * intersection.Depth;
+
+            if (intersection.Normal.x != 0.0f)
+                ball.Velocity.x *= -1;
+            else if (intersection.Normal.y != 0.0f)
+                ball.Velocity.y *= -1;
         }
     }
 }

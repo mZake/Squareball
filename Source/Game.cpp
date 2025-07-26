@@ -26,7 +26,7 @@ namespace Squareball
 
     void GameMain()
     {
-        InitWindow(1152, 648, "Squareball");
+        InitWindow(1152, 640, "Squareball");
 
         InitMatchScene();
 
