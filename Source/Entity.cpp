@@ -44,7 +44,6 @@ namespace Squareball
 
     void DrawEntity(const Entity& entity)
     {
-        Rectangle rect = { entity.Position.x, entity.Position.y, (float)entity.Width, (float)entity.Height };
-        DrawRectangleRec(rect, entity.Color);
+        DrawTextureV(entity.Texture, entity.Position, WHITE);
     }
 }

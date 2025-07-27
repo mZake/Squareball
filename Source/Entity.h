@@ -8,7 +8,7 @@ namespace Squareball
     {
         Vector2     Position;
         Vector2     Velocity;
-        Color       Color;
+        Texture2D   Texture;
         int         Width;
         int         Height;
     };

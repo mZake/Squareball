@@ -78,21 +78,21 @@ namespace Squareball
         s_Match.PlayerCount = 2;
         
         s_Match.Players[0].Position = { 64.0f, 64.0f };
-        s_Match.Players[0].Color = RED;
+        s_Match.Players[0].Texture = LoadTexture("Resources/Player1.png");
         s_Match.Players[0].Width = 64;
         s_Match.Players[0].Height = 64;
         s_Match.Players[0].Controller = PlayerController::WASDKeys;
         s_Match.Players[0].Speed = 300.0f;
 
         s_Match.Players[1].Position = { 300.0f, 300.0f };
-        s_Match.Players[1].Color = BLUE;
+        s_Match.Players[1].Texture = LoadTexture("Resources/Player2.png");
         s_Match.Players[1].Width = 64;
         s_Match.Players[1].Height = 64;
         s_Match.Players[1].Controller = PlayerController::None;
         s_Match.Players[1].Speed = 300.0f;
 
         s_Match.Ball.Position = { 544.0f, 288.0f };
-        s_Match.Ball.Color = WHITE;
+        s_Match.Ball.Texture = LoadTexture("Resources/Ball.png");
         s_Match.Ball.Width = 48;
         s_Match.Ball.Height = 48;
         s_Match.Ball.Friction = 0.2f;
