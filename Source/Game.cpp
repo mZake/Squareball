@@ -34,9 +34,9 @@ namespace Squareball
 
     void GameMain()
     {
+        SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
         InitWindow(WindowWidth, WindowHeight, "Squareball");
-        SetWindowState(FLAG_WINDOW_RESIZABLE);
-
+        
         InitMatchScene();
 
         s_Context.RenderTarget = LoadRenderTexture(WindowWidth, WindowHeight);
