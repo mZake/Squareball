@@ -88,7 +88,7 @@ namespace Squareball
         s_Match.Players[1].Texture = LoadTexture("Resources/Player2.png");
         s_Match.Players[1].Width = 64;
         s_Match.Players[1].Height = 64;
-        s_Match.Players[1].Controller = PlayerController::None;
+        s_Match.Players[1].Controller = PlayerController::ArrowKeys;
         s_Match.Players[1].Speed = 300.0f;
 
         s_Match.Ball.Position = { 544.0f, 288.0f };
