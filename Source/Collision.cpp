@@ -76,21 +76,20 @@ namespace Squareball
         return IntersectRectangles(entity1Rect, entity2Rect);
     }
 
-    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& map)
+    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& tilemap)
     {
-        int tileWidth = map.Tileset.TileWidth;
-        int tileHeight = map.Tileset.TileHeight;
-
+        Tileset& tileset = *tilemap.TilesetPtr;
+        
         int rectLeft = rect.x;
         int rectRight = rect.x + rect.width;
         int rectTop = rect.y;
         int rectBottom = rect.y + rect.height;
 
-        int leftTile = rectLeft / tileWidth;
-        int rightTile = rectRight / tileWidth;
-        int topTile = rectTop / tileHeight;
-        int bottomTile = rectBottom / tileHeight;
-
+        int leftTile = rectLeft / tileset.TileWidth;
+        int rightTile = rectRight / tileset.TileWidth;
+        int topTile = rectTop / tileset.TileHeight;
+        int bottomTile = rectBottom / tileset.TileHeight;
+        
         Intersection result = {};
         result.Depth = MaxDepth;
 
@@ -98,12 +97,15 @@ namespace Squareball
         {
             for (int x = leftTile; x <= rightTile; x++)
             {
-                int tileIndex = map.Tiles[x + y * map.Width];
-                Tile tile = map.Tileset.Tiles[tileIndex];
+                int tileIndex = tilemap.Tiles[x + y * tilemap.Width];
+                Tile tile = tileset.Tiles[tileIndex];
                 if (tile.Flags & TileFlags_Wall)
                 {
-                    Rectangle tileRect = { (float)x * tileWidth, (float)y * tileHeight, (float)tileWidth, (float)tileHeight };
-
+                    Rectangle tileRect = {
+                        (float)x * tileset.TileWidth, (float)y * tileset.TileHeight,
+                        (float)tileset.TileWidth, (float)tileset.TileHeight,
+                    };
+                    
                     Intersection intersection = IntersectRectangles(rect, tileRect);
                     if (intersection.Depth > 0.0f && intersection.Depth < result.Depth)
                     {

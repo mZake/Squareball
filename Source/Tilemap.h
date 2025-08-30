@@ -1,40 +1,25 @@
 #pragma once
 
-#include <stdint.h>
-
-#include <vector>
+#include "Tileset.h"
 
 #include <raylib.h>
 
+#include <string_view>
+#include <vector>
+
+#include <stdint.h>
+
 namespace Squareball
 {
-    enum TileFlags : uint8_t
-    {
-        TileFlags_None = 0,
-        TileFlags_Wall = 1 << 0,
-    };
-
-    struct Tile
-    {
-        Vector2     TexCoords;
-        uint8_t     Flags;
-    };
-
-    struct Tileset
-    {
-        int                 TileWidth;
-        int                 TileHeight;
-        Texture2D           Atlas;
-        std::vector<Tile>   Tiles;
-    };
-
     struct Tilemap
     {
-        int                 Width;
-        int                 Height;
-        Tileset             Tileset;
-        std::vector<int>    Tiles;
+        std::vector<int> Tiles;
+        Tileset* TilesetPtr;
+        int Width;
+        int Height;
     };
-
-    void DrawTilemap(const Tilemap& map);
+    
+    Tilemap LoadTilemap(std::string_view filepath, Tileset& tileset);
+    
+    void DrawTilemap(const Tilemap& tilemap);
 }

@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(External/raylib)
 add_subdirectory(External/raygui)
+add_subdirectory(External/yaml-cpp)
 
 set(GAME_SOURCES
     Source/Scenes/Match.cpp
@@ -19,11 +20,13 @@ set(GAME_SOURCES
     Source/Main.cpp
     Source/Tilemap.cpp
     Source/Tilemap.h
+    Source/Tileset.cpp
+    Source/Tileset.h
 )
 
 add_executable(Game ${GAME_SOURCES})
 
 target_include_directories(Game PRIVATE Source)
-target_link_libraries(Game PRIVATE raylib raygui)
+target_link_libraries(Game PRIVATE raylib raygui yaml-cpp)
 
 set_target_properties(Game PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})

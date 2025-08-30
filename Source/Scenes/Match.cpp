@@ -28,7 +28,8 @@ namespace Squareball
         int     PlayerCount;
         Player  Players[4];
         Ball    Ball;
-        Tilemap Map;
+        Tileset MapTileset;
+        Tilemap MapTilemap;
     };
 
     static Match s_Match = {};
@@ -98,13 +99,8 @@ namespace Squareball
         s_Match.Ball.Friction = 0.2f;
         s_Match.Ball.ImpulseForce = 4.0f;
 
-        s_Match.Map.Width = 18;
-        s_Match.Map.Height = 10;
-        s_Match.Map.Tileset.TileWidth = 64;
-        s_Match.Map.Tileset.TileHeight = 64;
-        s_Match.Map.Tileset.Atlas = LoadTexture("Resources/TestAtlas.png");
-        s_Match.Map.Tileset.Tiles = std::move(s_TestTiles);
-        s_Match.Map.Tiles = std::move(s_TestMap);
+        s_Match.MapTileset = LoadTileset("Resources/TestTileset.mts");
+        s_Match.MapTilemap = LoadTilemap("Resources/TestTilemap.mtm", s_Match.MapTileset);
     }
 
     static void OnMatchUpdate(float delta)
@@ -121,7 +117,7 @@ namespace Squareball
     static void OnMatchRender()
     {
         ClearBackground(GREEN);
-        DrawTilemap(s_Match.Map);
+        DrawTilemap(s_Match.MapTilemap);
         DrawEntities();
         CustomDrawFPS();
     }
@@ -153,9 +149,9 @@ namespace Squareball
     static void ProcessCollisions()
     {
         for (int i = 0; i < s_Match.PlayerCount; i++)
-            ProcessCollisionPlayerTilemap(s_Match.Players[i], s_Match.Map);
+            ProcessCollisionPlayerTilemap(s_Match.Players[i], s_Match.MapTilemap);
         
-        ProcessCollisionBallTilemap(s_Match.Ball, s_Match.Map);
+        ProcessCollisionBallTilemap(s_Match.Ball, s_Match.MapTilemap);
         
         for (int i = 0; i < s_Match.PlayerCount - 1; i++)
             for (int j = i + 1; j < s_Match.PlayerCount; j++)
