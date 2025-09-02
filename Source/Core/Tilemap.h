@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Tileset.h"
+#include "Core/Tileset.h"
 
 #include <raylib.h>
 
 #include <string_view>
 #include <vector>
-
-#include <stdint.h>
 
 namespace Squareball
 {
@@ -20,6 +18,5 @@ namespace Squareball
     };
     
     Tilemap LoadTilemap(std::string_view filepath, Tileset& tileset);
-    
     void DrawTilemap(const Tilemap& tilemap);
 }

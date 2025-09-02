@@ -1,32 +1,29 @@
 cmake_minimum_required(VERSION 3.15)
-project(Squareball VERSION 1.0)
+project(Squareball LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(External/raylib)
-add_subdirectory(External/raygui)
-add_subdirectory(External/yaml-cpp)
+add_subdirectory("External/raylib")
+add_subdirectory("External/raygui")
+add_subdirectory("External/yaml-cpp")
 
-set(GAME_SOURCES
-    Source/Scenes/Match.cpp
-    Source/Scenes/Match.h
-    Source/Collision.cpp
-    Source/Collision.h
-    Source/Entity.cpp
-    Source/Entity.h
-    Source/Game.cpp
-    Source/Game.h
-    Source/Main.cpp
-    Source/Tilemap.cpp
-    Source/Tilemap.h
-    Source/Tileset.cpp
-    Source/Tileset.h
+add_executable(Squareball
+    "Source/Core/Collision.cpp"
+    "Source/Core/Collision.h"
+    "Source/Core/Entity.cpp"
+    "Source/Core/Entity.h"
+    "Source/Core/Main.cpp"
+    "Source/Core/Tilemap.cpp"
+    "Source/Core/Tilemap.h"
+    "Source/Core/Tileset.cpp"
+    "Source/Core/Tileset.h"
+    "Source/Game/Game.cpp"
+    "Source/Game/Match.h"
+    "Source/Game/Match.cpp"
 )
 
-add_executable(Game ${GAME_SOURCES})
+target_include_directories(Squareball PRIVATE "${CMAKE_SOURCE_DIR}/Source")
+target_link_libraries(Squareball PRIVATE raylib raygui yaml-cpp)
 
-target_include_directories(Game PRIVATE Source)
-target_link_libraries(Game PRIVATE raylib raygui yaml-cpp)
-
-set_target_properties(Game PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
+set_target_properties(Squareball PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
