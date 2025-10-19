@@ -8,8 +8,6 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#include <vector>
-
 namespace Squareball
 {
     enum class PlayerController
@@ -45,16 +43,20 @@ namespace Squareball
     void UpdatePlayer(Player& player, float deltaTime);
     void UpdateBall(Ball& ball, float deltaTime);
     
-    void ProcessCollisionPlayers(Player& player1, Player& player2);
-    void ProcessCollisionPlayerBall(Player& player, Ball& ball);
-    void ProcessCollisionPlayerTilemap(Player& player, const Tilemap& map);
-    void ProcessCollisionBallTilemap(Ball& ball, const Tilemap& map);
+    bool ProcessCollisionPlayerTilemap(Player& player, const Tilemap& map, Axis axis);
+    bool ProcessCollisionBallTilemap(Ball& ball, const Tilemap& map, Axis axis);
+    bool ProcessCollisionPlayers(Player& player1, Player& player2, Axis axis);
+    bool ProcessCollisionPlayerBall(Player& player, Ball& ball, Axis axis);
     
-    void UpdateWorldEntities(float deltaTime);
-    void MoveWorldEntitiesX();
-    void MoveWorldEntitiesY();
-    void ProcessWorldCollisions();
-    void DrawWorldComponents();
+    void UpdateEntities(float deltaTime);
+    void DrawEntities();
+    
+    void UpdateEntitiesPositionX();
+    void UpdateEntitiesPositionY();
+    void ResolveTilemapCollisionsX();
+    void ResolveTilemapCollisionsY();
+    void ResolveEntityCollisionsX();
+    void ResolveEntityCollisionsY();
     
     void CustomDrawFPS();
     
@@ -91,21 +93,23 @@ namespace Squareball
     {
         float deltaTime = GetFrameTime();
         
-        UpdateWorldEntities(deltaTime);
+        UpdateEntities(deltaTime);
         
-        MoveWorldEntitiesX();
-        ProcessWorldCollisions();
+        UpdateEntitiesPositionX();
+        ResolveTilemapCollisionsX();
+        ResolveEntityCollisionsX();
         
-        MoveWorldEntitiesY();
-        ProcessWorldCollisions();
+        UpdateEntitiesPositionY();
+        ResolveTilemapCollisionsY();
+        ResolveEntityCollisionsY();
     }
     
     void OnMatchRender()
     {
         ClearBackground(GREEN);
         DrawTilemap(s_World.MapTilemap);
-        DrawWorldComponents();
-        CustomDrawFPS();
+        DrawEntities();
+        //CustomDrawFPS();
     }
     
     void UpdatePlayer(Player& player, float deltaTime)
@@ -135,48 +139,123 @@ namespace Squareball
             ball.Velocity -= ball.Velocity * ball.Friction * deltaTime;
     }
     
-    void ProcessCollisionPlayers(Player& player1, Player& player2)
+    bool ProcessCollisionPlayerTilemap(Player& player, const Tilemap& map, Axis axis)
     {
-        Intersection intersection = IntersectEntities(player1, player2);
+        Intersection intersection = IntersectEntityTilemap(player, map, axis);
         if (intersection.Overlapping)
         {
-            player1.Position -= intersection.Normal * intersection.Depth / 2;
-            player2.Position += intersection.Normal * intersection.Depth / 2;
+            if (axis == Axis::X)
+            {
+                MoveEntityX(player, -intersection.Normal.x * intersection.Depth);
+                player.CanMoveX = false;
+            }
+            else
+            {
+                MoveEntityY(player, -intersection.Normal.y * intersection.Depth);
+                player.CanMoveY = false;
+            }
         }
+        
+        return intersection.Overlapping;
     }
     
-    void ProcessCollisionPlayerBall(Player& player, Ball& ball)
+    bool ProcessCollisionBallTilemap(Ball& ball, const Tilemap& map, Axis axis)
     {
-        Intersection intersection = IntersectEntities(player, ball);
+        Intersection intersection = IntersectEntityTilemap(ball, map, axis);
         if (intersection.Overlapping)
         {
-            player.Position -= intersection.Normal * intersection.Depth;
-            ball.Velocity += intersection.Normal * ball.Impulse;
-        }
-    }
-    
-    void ProcessCollisionPlayerTilemap(Player& player, const Tilemap& map)
-    {
-        Intersection intersection = IntersectEntityTilemap(player, map);
-        if (intersection.Overlapping)
-            player.Position -= intersection.Normal * intersection.Depth;
-    }
-    
-    void ProcessCollisionBallTilemap(Ball& ball, const Tilemap& map)
-    {
-        Intersection intersection = IntersectEntityTilemap(ball, map);
-        if (intersection.Overlapping)
-        {
-            ball.Position -= intersection.Normal * intersection.Depth;
-            
-            if (intersection.Normal.x != 0.0f)
+            if (axis == Axis::X)
+            {
+                MoveEntityX(ball, -intersection.Normal.x * intersection.Depth);
                 ball.Velocity.x *= -1;
-            else if (intersection.Normal.y != 0.0f)
+            }
+            else
+            {
+                MoveEntityY(ball, -intersection.Normal.y * intersection.Depth);
                 ball.Velocity.y *= -1;
+            }
         }
+        
+        return intersection.Overlapping;
     }
     
-    void UpdateWorldEntities(float deltaTime)
+    bool ProcessCollisionPlayers(Player& player1, Player& player2, Axis axis)
+    {
+        Intersection intersection = IntersectEntities(player1, player2, axis);
+        if (intersection.Overlapping)
+        {
+            Vector2 correction = intersection.Normal * intersection.Depth / 2;
+            Vector2 player1Correction = correction;
+            Vector2 player2Correction = correction;
+            
+            if (axis == Axis::X)
+            {
+                if (!player1.CanMoveX)
+                {
+                    player1Correction.x = 0.0f;
+                    player2Correction.x *= 2.0f;
+                }
+                else if (!player2.CanMoveX)
+                {
+                    player2Correction.x = 0.0f;
+                    player1Correction.x *= 2.0f;
+                }
+                
+                MoveEntityX(player1, -player1Correction.x);
+                MoveEntityX(player2, player2Correction.x);
+            }
+            else
+            {
+                if (!player1.CanMoveY)
+                {
+                    player1Correction.y = 0.0f;
+                    player2Correction.y *= 2.0f;
+                }
+                else if (!player2.CanMoveY)
+                {
+                    player2Correction.y = 0.0f;
+                    player1Correction.y *= 2.0f;
+                }
+                
+                MoveEntityY(player1, -player1Correction.y);
+                MoveEntityY(player2, player2Correction.y);
+            }
+        }
+        
+        return intersection.Overlapping;
+    }
+    
+    bool ProcessCollisionPlayerBall(Player& player, Ball& ball, Axis axis)
+    {
+        Intersection intersection = IntersectEntities(player, ball, axis);
+        if (intersection.Overlapping)
+        {
+            Vector2 correction = intersection.Normal * intersection.Depth;
+            
+            if (axis == Axis::X)
+            {
+                if (player.CanMoveX)
+                    MoveEntityX(player, -correction.x);
+                else
+                    MoveEntityX(ball, correction.x);
+                
+                ball.Velocity.x += intersection.Normal.x * ball.Impulse;
+            }
+            else
+            {
+                if (player.CanMoveY)
+                    MoveEntityY(player, -correction.y);
+                else
+                    MoveEntityY(ball, correction.y);
+                
+                ball.Velocity.y += intersection.Normal.y * ball.Impulse;
+            }
+        }
+        
+        return intersection.Overlapping;
+    }
+    
+    void UpdateEntities(float deltaTime)
     {
         for (int i = 0; i < s_World.PlayerCount; i++)
             UpdatePlayer(s_World.Players[i], deltaTime);
@@ -184,43 +263,100 @@ namespace Squareball
         UpdateBall(s_World.Ball, deltaTime);
     }
     
-    void MoveWorldEntitiesX()
-    {
-        for (int i = 0; i < s_World.PlayerCount; i++)
-            MoveEntityX(s_World.Players[i]);
-        
-        MoveEntityX(s_World.Ball);
-    }
-    
-    void MoveWorldEntitiesY()
-    {
-        for (int i = 0; i < s_World.PlayerCount; i++)
-            MoveEntityY(s_World.Players[i]);
-        
-        MoveEntityY(s_World.Ball);
-    }
-    
-    void ProcessWorldCollisions()
-    {
-        for (int i = 0; i < s_World.PlayerCount; i++)
-            ProcessCollisionPlayerTilemap(s_World.Players[i], s_World.MapTilemap);
-        
-        ProcessCollisionBallTilemap(s_World.Ball, s_World.MapTilemap);
-        
-        for (int i = 0; i < s_World.PlayerCount - 1; i++)
-            for (int j = i + 1; j < s_World.PlayerCount; j++)
-                ProcessCollisionPlayers(s_World.Players[i], s_World.Players[j]);
-        
-        for (int i = 0; i < s_World.PlayerCount; i++)
-            ProcessCollisionPlayerBall(s_World.Players[i], s_World.Ball);
-    }
-    
-    void DrawWorldComponents()
+    void DrawEntities()
     {
         for (int i = 0; i < s_World.PlayerCount; i++)
             DrawEntity(s_World.Players[i]);
         
         DrawEntity(s_World.Ball);
+    }
+    
+    void UpdateEntitiesPositionX()
+    {
+        for (int i = 0; i < s_World.PlayerCount; i++)
+            UpdateEntityPositionX(s_World.Players[i]);
+        
+        UpdateEntityPositionX(s_World.Ball);
+    }
+    
+    void UpdateEntitiesPositionY()
+    {
+        for (int i = 0; i < s_World.PlayerCount; i++)
+            UpdateEntityPositionY(s_World.Players[i]);
+        
+        UpdateEntityPositionY(s_World.Ball);
+    }
+    
+    void ResolveTilemapCollisionsX()
+    {
+        for (int i = 0; i < s_World.PlayerCount; i++)
+        {
+            if (s_World.Players[i].MovedX || s_World.Players[i].WasMovingX)
+                ProcessCollisionPlayerTilemap(s_World.Players[i], s_World.MapTilemap, Axis::X);
+        }
+        
+        if (s_World.Ball.MovedX || s_World.Ball.WasMovingX)
+            ProcessCollisionBallTilemap(s_World.Ball, s_World.MapTilemap, Axis::X);
+    }
+    
+    void ResolveTilemapCollisionsY()
+    {
+        for (int i = 0; i < s_World.PlayerCount; i++)
+        {
+            if (s_World.Players[i].MovedY || s_World.Players[i].WasMovingY)
+                ProcessCollisionPlayerTilemap(s_World.Players[i], s_World.MapTilemap, Axis::Y);
+        }
+        
+        if (s_World.Ball.MovedY || s_World.Ball.WasMovingY)
+            ProcessCollisionBallTilemap(s_World.Ball, s_World.MapTilemap, Axis::Y);
+    }
+    
+    void ResolveEntityCollisionsX()
+    {
+        constexpr int MaxIterations = 10;
+        for (int iter = 0; iter < MaxIterations; iter++)
+        {
+            bool anyCollision = false;
+            
+            for (int i = 0; i < s_World.PlayerCount; i++)
+            {
+                for (int j = i + 1; j < s_World.PlayerCount; j++)
+                {
+                    if (ProcessCollisionPlayers(s_World.Players[i], s_World.Players[j], Axis::X))
+                        anyCollision = true;
+                }
+                
+                if (ProcessCollisionPlayerBall(s_World.Players[i], s_World.Ball, Axis::X))
+                    anyCollision = true;
+            }
+            
+            if (!anyCollision)
+                break;
+        }
+    }
+    
+    void ResolveEntityCollisionsY()
+    {
+        constexpr int MaxIterations = 10;
+        for (int iter = 0; iter < MaxIterations; iter++)
+        {
+            bool anyCollision = false;
+            
+            for (int i = 0; i < s_World.PlayerCount; i++)
+            {
+                for (int j = i + 1; j < s_World.PlayerCount; j++)
+                {
+                    if (ProcessCollisionPlayers(s_World.Players[i], s_World.Players[j], Axis::Y))
+                        anyCollision = true;
+                }
+                
+                if (ProcessCollisionPlayerBall(s_World.Players[i], s_World.Ball, Axis::Y))
+                    anyCollision = true;
+            }
+            
+            if (!anyCollision)
+                break;
+        }
     }
     
     void CustomDrawFPS()

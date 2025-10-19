@@ -6,78 +6,85 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#include <cmath>
+#include <float.h>
+#include <math.h>
 
 namespace Squareball
 {
     constexpr float MaxDepth = 1000000000.0f;
     
-    Intersection IntersectRectangles(Rectangle rect1, Rectangle rect2)
+    Intersection IntersectRectangles(Rectangle rect1, Rectangle rect2, Axis axis)
     {
-        float rect1Left    = rect1.x;
-        float rect1Right   = rect1.x + rect1.width;
-        float rect1Top     = rect1.y;
-        float rect1Bottom  = rect1.y + rect1.height;
+        if (!CheckCollisionRecs(rect1, rect2))
+            return Intersection{};
         
-        float rect2Left    = rect2.x;
-        float rect2Right   = rect2.x + rect2.width;
-        float rect2Top     = rect2.y;
-        float rect2Bottom  = rect2.y + rect2.height;
+        Intersection intersection = {};
         
-        Intersection result = {};
-        
-        if (CheckCollisionRecs(rect1, rect2))
+        if (axis == Axis::X)
         {
-            float left = std::fabsf(rect1Left - rect2Right);
-            float right = std::fabsf(rect1Right - rect2Left);
-            float top = std::fabsf(rect1Top - rect2Bottom);
-            float bottom = std::fabsf(rect1Bottom - rect2Top);
+            float rect1Left = rect1.x;
+            float rect1Right = rect1.x + rect1.width;
+            float rect2Left = rect2.x;
+            float rect2Right = rect2.x + rect2.width;
             
-            float xDepth = std::fminf(left, right);
-            float yDepth = std::fminf(top, bottom);
-            
-            if (xDepth < yDepth)
+            if (rect1Left <= rect2Right && rect1Right >= rect2Left)
             {
+                float left = std::fabsf(rect1Left - rect2Right);
+                float right = std::fabsf(rect1Right - rect2Left);
+                
                 if (left < right)
                 {
-                    result.Normal = { -1.0f, 0.0f };
-                    result.Depth = left;
+                    intersection.Normal = { -1.0f, 0.0f };
+                    intersection.Depth = left;
                 }
                 else
                 {
-                    result.Normal = { 1.0f, 0.0f };
-                    result.Depth = right;
+                    intersection.Normal = { 1.0f, 0.0f };
+                    intersection.Depth = right;
                 }
+                
+                intersection.Overlapping = true;
             }
-            else
+        }
+        else if (axis == Axis::Y)
+        {
+            float rect1Top = rect1.y;
+            float rect1Bottom = rect1.y + rect1.height;
+            float rect2Top = rect2.y;
+            float rect2Bottom = rect2.y + rect2.height;
+            
+            if (rect1Top <= rect2Bottom && rect1Bottom >= rect2Top)
             {
+                float top = std::fabsf(rect1Top - rect2Bottom);
+                float bottom = std::fabsf(rect1Bottom - rect2Top);
+                
                 if (top < bottom)
                 {
-                    result.Normal = { 0.0f, -1.0f };
-                    result.Depth = top;
+                    intersection.Normal = { 0.0f, -1.0f };
+                    intersection.Depth = top;
                 }
                 else
                 {
-                    result.Normal = { 0.0f, 1.0f };
-                    result.Depth = bottom;
+                    intersection.Normal = { 0.0f, 1.0f };
+                    intersection.Depth = bottom;
                 }
+                
+                intersection.Overlapping = true;
             }
-            
-            result.Overlapping = true;
         }
         
-        return result;
+        return intersection;
     }
     
-    Intersection IntersectEntities(const Entity& entity1, const Entity& entity2)
+    Intersection IntersectEntities(const Entity& entity1, const Entity& entity2, Axis axis)
     {
         Rectangle entity1Rect = { entity1.Position.x, entity1.Position.y, (float)entity1.Width, (float)entity1.Height };
         Rectangle entity2Rect = { entity2.Position.x, entity2.Position.y, (float)entity2.Width, (float)entity2.Height };
         
-        return IntersectRectangles(entity1Rect, entity2Rect);
+        return IntersectRectangles(entity1Rect, entity2Rect, axis);
     }
     
-    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& tilemap)
+    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& tilemap, Axis axis)
     {
         Tileset& tileset = *tilemap.TilesetPtr;
         
@@ -91,8 +98,8 @@ namespace Squareball
         int topTile = rectTop / tileset.TileHeight;
         int bottomTile = rectBottom / tileset.TileHeight;
         
-        Intersection result = {};
-        result.Depth = MaxDepth;
+        Intersection intersection = {};
+        intersection.Depth = FLT_MAX;
         
         for (int y = topTile; y <= bottomTile; y++)
         {
@@ -107,26 +114,20 @@ namespace Squareball
                         (float)tileset.TileWidth, (float)tileset.TileHeight,
                     };
                     
-                    Intersection intersection = IntersectRectangles(rect, tileRect);
-                    if (intersection.Depth > 0.0f && intersection.Depth < result.Depth)
-                    {
-                        result.Normal = intersection.Normal;
-                        result.Depth = intersection.Depth;
-                    }
+                    Intersection tileIntersection = IntersectRectangles(rect, tileRect, axis);
+                    if (tileIntersection.Overlapping && tileIntersection.Depth < intersection.Depth)
+                        intersection = tileIntersection;
                 }
             }
         }
         
-        if (result.Depth < MaxDepth)
-            result.Overlapping = true;
-        
-        return result;
+        return intersection;
     }
     
-    Intersection IntersectEntityTilemap(const Entity& entity, const Tilemap& map)
+    Intersection IntersectEntityTilemap(const Entity& entity, const Tilemap& map, Axis axis)
     {
         Rectangle entityRect = { entity.Position.x, entity.Position.y, (float)entity.Width, (float)entity.Height };
         
-        return IntersectRectangleTilemap(entityRect, map);
+        return IntersectRectangleTilemap(entityRect, map, axis);
     }
 }

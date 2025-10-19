@@ -7,6 +7,8 @@
 
 namespace Squareball
 {
+    enum class Axis { X, Y };
+    
     struct Intersection
     {
         Vector2 Normal;
@@ -14,8 +16,8 @@ namespace Squareball
         bool Overlapping;
     };
     
-    Intersection IntersectRectangles(Rectangle rect1, Rectangle rect2);
-    Intersection IntersectEntities(const Entity& entity1, const Entity& entity2);
-    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& map);
-    Intersection IntersectEntityTilemap(const Entity& entity, const Tilemap& map);
+    Intersection IntersectRectangles(Rectangle rect1, Rectangle rect2, Axis axis);
+    Intersection IntersectEntities(const Entity& entity1, const Entity& entity2, Axis axis);
+    Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& map, Axis axis);
+    Intersection IntersectEntityTilemap(const Entity& entity, const Tilemap& map, Axis axis);
 }
