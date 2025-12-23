@@ -42,4 +42,4 @@
 
 # Directories
 .vscode/
-Build/
+build/
