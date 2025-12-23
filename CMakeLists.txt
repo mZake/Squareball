@@ -4,6 +4,15 @@ project(Squareball LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+
+FetchContent_Declare(SDL3
+    URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.28.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP OFF
+    FIND_PACKAGE_ARGS 3.2.28 QUIET)
+
+FetchContent_MakeAvailable(SDL3)
+
 add_subdirectory("External/raylib")
 add_subdirectory("External/raygui")
 add_subdirectory("External/yaml-cpp")
@@ -24,6 +33,6 @@ add_executable(Squareball
 )
 
 target_include_directories(Squareball PRIVATE "${CMAKE_SOURCE_DIR}/Source")
-target_link_libraries(Squareball PRIVATE raylib raygui yaml-cpp)
+target_link_libraries(Squareball PRIVATE raylib raygui SDL3::SDL3 yaml-cpp)
 
 set_target_properties(Squareball PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
