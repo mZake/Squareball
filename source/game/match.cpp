@@ -65,28 +65,28 @@ namespace Squareball
         s_World.PlayerCount = 2;
         
         s_World.Players[0].Position = { 64.0f, 64.0f };
-        s_World.Players[0].Texture = LoadTexture("Resources/Player1.png");
+        s_World.Players[0].Texture = LoadTexture("resources/player1.png");
         s_World.Players[0].Width = 64;
         s_World.Players[0].Height = 64;
         s_World.Players[0].Controller = PlayerController::WASD;
         s_World.Players[0].MoveSpeed = 300.0f;
         
         s_World.Players[1].Position = { 300.0f, 300.0f };
-        s_World.Players[1].Texture = LoadTexture("Resources/Player2.png");
+        s_World.Players[1].Texture = LoadTexture("resources/player2.png");
         s_World.Players[1].Width = 64;
         s_World.Players[1].Height = 64;
         s_World.Players[1].Controller = PlayerController::Arrows;
         s_World.Players[1].MoveSpeed = 300.0f;
         
         s_World.Ball.Position = { 544.0f, 288.0f };
-        s_World.Ball.Texture = LoadTexture("Resources/Ball.png");
+        s_World.Ball.Texture = LoadTexture("resources/ball.png");
         s_World.Ball.Width = 48;
         s_World.Ball.Height = 48;
         s_World.Ball.Friction = 0.2f;
         s_World.Ball.Impulse = 4.0f;
         
-        s_World.MapTileset = LoadTileset("Resources/TestTileset.mts");
-        s_World.MapTilemap = LoadTilemap("Resources/TestTilemap.mtm", s_World.MapTileset);
+        s_World.MapTileset = LoadTileset("resources/test_tileset.mts");
+        s_World.MapTilemap = LoadTilemap("resources/test_tilemap.mtm", s_World.MapTileset);
     }
     
     void OnMatchUpdate()
