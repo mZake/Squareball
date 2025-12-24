@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Tileset.h"
+#include "core/tileset.h"
 
 #include <raylib.h>
 

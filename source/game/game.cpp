@@ -1,4 +1,4 @@
-#include "Game/Match.h"
+#include "game/match.h"
 
 #include <raylib.h>
 

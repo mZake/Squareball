@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Entity.h"
-#include "Core/Tilemap.h"
+#include "core/entity.h"
+#include "core/tilemap.h"
 
 #include <raylib.h>
 

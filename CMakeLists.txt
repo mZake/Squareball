@@ -15,20 +15,20 @@ FetchContent_Declare(SDL3
 FetchContent_MakeAvailable(SDL3)
 
 set(SOURCE_FILES
-    Source/Core/app.cpp
-    Source/Core/app.h
-    Source/Core/Collision.cpp
-    Source/Core/Collision.h
-    Source/Core/Entity.cpp
-    Source/Core/Entity.h
-    Source/Core/Main.cpp
-    Source/Core/Tilemap.cpp
-    Source/Core/Tilemap.h
-    Source/Core/Tileset.cpp
-    Source/Core/Tileset.h
-    Source/Game/Game.cpp
-    Source/Game/Match.h
-    Source/Game/Match.cpp)
+    source/core/app.cpp
+    source/core/app.h
+    source/core/collision.cpp
+    source/core/collision.h
+    source/core/entity.cpp
+    source/core/entity.h
+    source/core/main.cpp
+    source/core/tilemap.cpp
+    source/core/tilemap.h
+    source/core/tileset.cpp
+    source/core/tileset.h
+    source/game/game.cpp
+    source/game/match.h
+    source/game/match.cpp)
 
 add_executable(Squareball ${SOURCE_FILES})
 
@@ -38,6 +38,6 @@ set_target_properties(Squareball
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF)
 
-target_include_directories(Squareball PRIVATE "${CMAKE_SOURCE_DIR}/Source")
+target_include_directories(Squareball PRIVATE "${CMAKE_SOURCE_DIR}/source")
 
 target_link_libraries(Squareball PRIVATE raylib raygui SDL3::SDL3 yaml-cpp)

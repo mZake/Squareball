@@ -1,9 +1,9 @@
-#include "Match.h"
+#include "match.h"
 
-#include "Core/Collision.h"
-#include "Core/Entity.h"
-#include "Core/Tilemap.h"
-#include "Core/Tileset.h"
+#include "core/collision.h"
+#include "core/entity.h"
+#include "core/tilemap.h"
+#include "core/tileset.h"
 
 #include <raylib.h>
 #include <raymath.h>

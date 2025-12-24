@@ -1,7 +1,7 @@
-#include "Core/Collision.h"
+#include "core/collision.h"
 
-#include "Core/Entity.h"
-#include "Core/Tilemap.h"
+#include "core/entity.h"
+#include "core/tilemap.h"
 
 #include <raylib.h>
 #include <raymath.h>
@@ -29,8 +29,8 @@ namespace Squareball
             
             if (rect1Left <= rect2Right && rect1Right >= rect2Left)
             {
-                float left = std::fabsf(rect1Left - rect2Right);
-                float right = std::fabsf(rect1Right - rect2Left);
+                float left = fabsf(rect1Left - rect2Right);
+                float right = fabsf(rect1Right - rect2Left);
                 
                 if (left < right)
                 {
@@ -55,8 +55,8 @@ namespace Squareball
             
             if (rect1Top <= rect2Bottom && rect1Bottom >= rect2Top)
             {
-                float top = std::fabsf(rect1Top - rect2Bottom);
-                float bottom = std::fabsf(rect1Bottom - rect2Top);
+                float top = fabsf(rect1Top - rect2Bottom);
+                float bottom = fabsf(rect1Bottom - rect2Top);
                 
                 if (top < bottom)
                 {
