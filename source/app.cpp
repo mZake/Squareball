@@ -4,6 +4,7 @@
 #include <SDL3/SDL.h>
 
 #include "app.h"
+#include "scene.h"
 
 namespace Squareball::App
 {
@@ -75,10 +76,6 @@ namespace Squareball::App
     
     void MainLoop()
     {
-        float red = 0.0f;
-        float green = 0.0f;
-        float blue = 0.0f;
-        
         s_LastTicks = SDL_GetTicks();
         
         while (s_Running)
@@ -87,12 +84,13 @@ namespace Squareball::App
             
             ProcessEvents();
             
-            red += 1.0f * delta_time;
-            green += 2.0f * delta_time;
-            blue += 3.0f * delta_time;
+            SceneManager::Update(delta_time);
             
-            SDL_SetRenderDrawColor(s_Renderer, red, green, blue, 255);
+            SDL_SetRenderDrawColor(s_Renderer, 80, 80, 160, 255);
             SDL_RenderClear(s_Renderer);
+            
+            SceneManager::Render(s_Renderer);
+            
             SDL_RenderPresent(s_Renderer);
         }
     }

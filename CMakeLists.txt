@@ -24,6 +24,8 @@ set(SOURCE_FILES
     source/main.cpp
     source/match.cpp
     source/match.h
+    source/scene.cpp
+    source/scene.h
     source/tilemap.cpp
     source/tilemap.h
     source/tileset.cpp
