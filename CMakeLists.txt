@@ -3,9 +3,9 @@ project(Squareball LANGUAGES CXX)
 
 include(FetchContent)
 
-add_subdirectory(External/raylib)
-add_subdirectory(External/raygui)
-add_subdirectory(External/yaml-cpp)
+add_subdirectory(external/raylib)
+add_subdirectory(external/raygui)
+add_subdirectory(external/yaml-cpp)
 
 FetchContent_Declare(SDL3
     URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.28.zip
