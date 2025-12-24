@@ -1,6 +1,6 @@
-#include "core/tilemap.h"
+#include "tilemap.h"
 
-#include "core/tileset.h"
+#include "tileset.h"
 
 #include <yaml-cpp/yaml.h>
 

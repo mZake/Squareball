@@ -35,11 +35,3 @@ namespace Squareball
     
     Tileset LoadTileset(std::string_view filepath);
 }
-
-template<typename TFlag>
-struct Flags
-{
-    TFlag flags;
-    
-    operator TFlag() const { return flags; }
-};

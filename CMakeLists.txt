@@ -15,20 +15,19 @@ FetchContent_Declare(SDL3
 FetchContent_MakeAvailable(SDL3)
 
 set(SOURCE_FILES
-    source/core/app.cpp
-    source/core/app.h
-    source/core/collision.cpp
-    source/core/collision.h
-    source/core/entity.cpp
-    source/core/entity.h
-    source/core/main.cpp
-    source/core/tilemap.cpp
-    source/core/tilemap.h
-    source/core/tileset.cpp
-    source/core/tileset.h
-    source/game/game.cpp
-    source/game/match.h
-    source/game/match.cpp)
+    source/app.cpp
+    source/app.h
+    source/collision.cpp
+    source/collision.h
+    source/entity.cpp
+    source/entity.h
+    source/main.cpp
+    source/match.cpp
+    source/match.h
+    source/tilemap.cpp
+    source/tilemap.h
+    source/tileset.cpp
+    source/tileset.h)
 
 add_executable(Squareball ${SOURCE_FILES})
 
