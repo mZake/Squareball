@@ -5,7 +5,6 @@ include(FetchContent)
 
 add_subdirectory(external/raylib)
 add_subdirectory(external/raygui)
-add_subdirectory(external/yaml-cpp)
 
 FetchContent_Declare(SDL3
     URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.28.zip
@@ -39,4 +38,4 @@ set_target_properties(Squareball
 
 target_include_directories(Squareball PRIVATE "${CMAKE_SOURCE_DIR}/source")
 
-target_link_libraries(Squareball PRIVATE raylib raygui SDL3::SDL3 yaml-cpp)
+target_link_libraries(Squareball PRIVATE raylib raygui SDL3::SDL3)
