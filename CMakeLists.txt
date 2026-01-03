@@ -27,9 +27,7 @@ set(SOURCE_FILES
     source/scene.cpp
     source/scene.h
     source/tilemap.cpp
-    source/tilemap.h
-    source/tileset.cpp
-    source/tileset.h)
+    source/tilemap.h)
 
 add_executable(Squareball ${SOURCE_FILES})
 

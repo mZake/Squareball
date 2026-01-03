@@ -3,7 +3,7 @@
 #include "collision.h"
 #include "entity.h"
 #include "tilemap.h"
-#include "tileset.h"
+// #include "tileset.h"
 
 #include <raylib.h>
 #include <raymath.h>
@@ -85,8 +85,8 @@ namespace Squareball
         s_World.Ball.Friction = 0.2f;
         s_World.Ball.Impulse = 4.0f;
         
-        s_World.MapTileset = LoadTileset("resources/test_tileset.mts");
-        s_World.MapTilemap = LoadTilemap("resources/test_tilemap.mtm", s_World.MapTileset);
+        // s_World.MapTileset = LoadTileset("resources/test_tileset.mts");
+        // s_World.MapTilemap = LoadTilemap("resources/test_tilemap.mtm", s_World.MapTileset);
     }
     
     void OnMatchUpdate()
@@ -107,9 +107,9 @@ namespace Squareball
     void OnMatchRender()
     {
         ClearBackground(GREEN);
-        DrawTilemap(s_World.MapTilemap);
+        // DrawTilemap(s_World.MapTilemap);
         DrawEntities();
-        //CustomDrawFPS();
+        // CustomDrawFPS();
     }
     
     void UpdatePlayer(Player& player, float deltaTime)

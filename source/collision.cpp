@@ -86,6 +86,7 @@ namespace Squareball
     
     Intersection IntersectRectangleTilemap(Rectangle rect, const Tilemap& tilemap, Axis axis)
     {
+        /*
         Tileset& tileset = *tilemap.TilesetPtr;
         
         int rectLeft = rect.x;
@@ -122,6 +123,8 @@ namespace Squareball
         }
         
         return intersection;
+        */
+        return {};
     }
     
     Intersection IntersectEntityTilemap(const Entity& entity, const Tilemap& map, Axis axis)
