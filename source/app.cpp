@@ -40,8 +40,8 @@ namespace Squareball::App
             exit(EXIT_FAILURE);
         }
         
-        int screen_width = 800;
-        int screen_height = 600;
+        int screen_width = 1280;
+        int screen_height = 768;
         char window_title[] = "Squareball";
         
         s_Window = SDL_CreateWindow(window_title, screen_width, screen_height, 0);
@@ -57,6 +57,8 @@ namespace Squareball::App
             SDL_Log("Failed to create a renderer: %s", SDL_GetError());
             exit(EXIT_FAILURE);
         }
+        
+        SceneManager::Init(s_Renderer);
         
         s_Running = true;
     }

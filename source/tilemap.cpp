@@ -3,8 +3,8 @@
 #include <fstream>
 #include <vector>
 
-#include <stdint.h>
-
+#include "core.h"
+#include "texture.h"
 #include "tilemap.h"
 
 namespace Squareball
@@ -12,36 +12,35 @@ namespace Squareball
 #pragma pack(push, 1)
     struct SBMHeader
     {
-        uint8_t magic[4];
-        int32_t width;
-        int32_t height;
+        uint8 magic[4];
+        int32 width;
+        int32 height;
     };
     
     struct SBMCell
     {
-        int32_t tile_x;
-        int32_t tile_y;
-        uint32_t flags;
+        int32 tile_x;
+        int32 tile_y;
+        uint32 flags;
     };
 #pragma pack(pop)
     
     constexpr size_t SBM_MINIMUM_SIZE = sizeof(SBMHeader) + sizeof(SBMCell);
     
-    Tileset CreateTileset(SDL_Texture* atlas, int32_t tile_width, int32_t tile_height)
+    Tileset CreateTileset(TextureID atlas_id, int32 tile_width, int32 tile_height)
     {
-        SDL_assert(atlas != nullptr);
+        SDL_assert(atlas_id >= 0);
         SDL_assert(tile_width >= 4);
         SDL_assert(tile_height >= 4);
         
-        float atlas_width, atlas_height;
-        SDL_GetTextureSize(atlas, &atlas_width, &atlas_height);
+        Texture2D atlas_texture = TextureManager::GetTextureFromID(atlas_id);
         
         Tileset tileset;
-        tileset.atlas = atlas;
+        tileset.atlas_id = atlas_id;
         tileset.tile_width = tile_width;
         tileset.tile_height = tile_height;
-        tileset.width = static_cast<int32_t>(atlas_width) / tile_width;
-        tileset.height = static_cast<int32_t>(atlas_height) / tile_height;
+        tileset.width = atlas_texture.width / tile_width;
+        tileset.height = atlas_texture.height / tile_height;
         
         return tileset;
     }
@@ -93,7 +92,7 @@ namespace Squareball
         stream.close();
         
         Tilemap tilemap;
-        tilemap.tileset = &tileset;
+        tilemap.tileset = tileset;
         tilemap.cells = std::move(map_cells);
         tilemap.width = sbm_header.width;
         tilemap.height = sbm_header.height;
@@ -101,7 +100,7 @@ namespace Squareball
         return tilemap;
     }
     
-    MapCell GetTilemapCell(const Tilemap& tilemap, int32_t cell_x, int32_t cell_y)
+    MapCell GetTilemapCell(const Tilemap& tilemap, int32 cell_x, int32 cell_y)
     {
         SDL_assert(cell_x >= 0);
         SDL_assert(cell_y >= 0);
@@ -113,11 +112,11 @@ namespace Squareball
     {
         SDL_assert(renderer != nullptr);
         
-        const Tileset& tileset = *tilemap.tileset;
+        const Tileset& tileset = tilemap.tileset;
         
-        for (int32_t y = 0; y < tilemap.height; y++)
+        for (int32 y = 0; y < tilemap.height; y++)
         {
-            for (int32_t x = 0; x < tilemap.width; x++)
+            for (int32 x = 0; x < tilemap.width; x++)
             {
                 MapCell map_cell = GetTilemapCell(tilemap, x, y);
                 
@@ -133,7 +132,9 @@ namespace Squareball
                 dest_rect.w = tileset.tile_width;
                 dest_rect.h = tileset.tile_height;
                 
-                SDL_RenderTexture(renderer, tileset.atlas, &source_rect, &dest_rect);
+                Texture2D atlas = TextureManager::GetTextureFromID(tileset.atlas_id);
+                
+                SDL_RenderTexture(renderer, atlas.handle, &source_rect, &dest_rect);
             }
         }
     }

@@ -1,9 +1,27 @@
 #include <SDL3/SDL.h>
 
 #include "scene.h"
+#include "texture.h"
+#include "tilemap.h"
 
 namespace Squareball
 {
+    void InitPrototypeScene(PrototypeScene& scene, SDL_Renderer* renderer)
+    {
+        scene.player_texture_id = TextureManager::LoadTexture(renderer, "resources/player1.png");
+        
+        TextureID atlas_id = TextureManager::LoadTexture(renderer, "resources/test_atlas.png");
+        int32 tile_width = 64;
+        int32 tile_height = 64;
+        Tileset tileset = CreateTileset(atlas_id, tile_width, tile_height);
+        Tilemap tilemap = LoadTilemap(tileset, "resources/test_tilemap.sbm");
+        
+        scene.tilemap = tilemap;
+        
+        scene.player_x = 0.0f;
+        scene.player_y = 0.0f;
+    }
+    
     void UpdatePrototypeScene(PrototypeScene& scene, float delta_time)
     {
         const bool* keyboard = SDL_GetKeyboardState(nullptr);
@@ -28,20 +46,28 @@ namespace Squareball
     
     void RenderPrototypeScene(PrototypeScene& scene, SDL_Renderer* renderer)
     {
+        DrawTilemap(renderer, scene.tilemap);
+        
         SDL_FRect dest_rect;
         dest_rect.x = scene.player_x;
         dest_rect.y = scene.player_y;
-        dest_rect.w = 32;
-        dest_rect.h = 32;
+        dest_rect.w = 64;
+        dest_rect.h = 64;
         
-        SDL_SetRenderDrawColor(renderer, 80, 160, 80, 255);
-        SDL_RenderFillRect(renderer, &dest_rect);
+        Texture2D player_texture = TextureManager::GetTextureFromID(scene.player_texture_id);
+        
+        SDL_RenderTexture(renderer, player_texture.handle, nullptr, &dest_rect);
     }
 }
 
 namespace Squareball::SceneManager
 {
     static PrototypeScene s_Scene = {};
+    
+    void Init(SDL_Renderer* renderer)
+    {
+        InitPrototypeScene(s_Scene, renderer);
+    }
     
     void Update(float delta_time)
     {
