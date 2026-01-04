@@ -5,6 +5,7 @@ include(FetchContent)
 
 add_subdirectory(external/raylib)
 add_subdirectory(external/raygui)
+add_subdirectory(external/stb_image)
 
 FetchContent_Declare(SDL3
     URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.28.zip
@@ -18,6 +19,7 @@ set(SOURCE_FILES
     source/app.h
     source/collision.cpp
     source/collision.h
+    source/core.h
     source/entity.cpp
     source/entity.h
     source/main.cpp
@@ -25,6 +27,8 @@ set(SOURCE_FILES
     source/match.h
     source/scene.cpp
     source/scene.h
+    source/texture.cpp
+    source/texture.h
     source/tilemap.cpp
     source/tilemap.h)
 
@@ -38,4 +42,4 @@ set_target_properties(Squareball
 
 target_include_directories(Squareball PRIVATE "${CMAKE_SOURCE_DIR}/source")
 
-target_link_libraries(Squareball PRIVATE raylib raygui SDL3::SDL3)
+target_link_libraries(Squareball PRIVATE raylib raygui SDL3::SDL3 stb_image::stb_image)
